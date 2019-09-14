@@ -220,6 +220,7 @@ Char sbpTaskStack[SBP_TASK_STACK_SIZE];
 // GAP - SCAN RSP data (max size = 31 bytes)
 static uint8_t scanRspData[] =
 {
+  /*
   // complete name
   0x14,   // length of this data
   GAP_ADTYPE_LOCAL_NAME_COMPLETE,
@@ -242,6 +243,7 @@ static uint8_t scanRspData[] =
   'r',
   'a',
   'l',
+  */
 
   // connection interval range
   0x05,   // length of this data
@@ -261,6 +263,32 @@ static uint8_t scanRspData[] =
 // best kept short to conserve power while advertisting)
 static uint8_t advertData[] =
 {
+  // complete name
+  0x17,   // length of this data
+  GAP_ADTYPE_LOCAL_NAME_COMPLETE,
+  'S',
+  'T',
+  'B',
+  'Y',
+  'F',
+  '0',
+  '0',
+  '0',
+  '0',
+  '0',
+  '6',
+  '0',
+  '3',
+  '7',
+  '1',
+  'B',
+  '6',
+  '7',
+  '6',
+  'D',
+  'D',
+  'D',
+
   // Flags; this sets the device to use limited discoverable
   // mode (advertises for 30 seconds at a time) instead of general
   // discoverable mode (advertises indefinitely)
@@ -1163,6 +1191,8 @@ static void SimpleBLEPeripheral_processCharValueChangeEvt(uint8_t paramID)
   
   uint8_t newValue[21];
   
+  static uint32_t count = 0;
+  
   switch(paramID)
   {
     case SIMPLEPROFILE_CHAR1:
@@ -1174,10 +1204,17 @@ static void SimpleBLEPeripheral_processCharValueChangeEvt(uint8_t paramID)
       }
       
       // notify on CHAR4
-      uint8_t buf[4] = {0xF3, 0x3F, 0x5A, 0xA5};
-      // SimpleProfile_SetParameter(SIMPLEPROFILE_CHAR4, sizeof(uint8_t), &valueToCopy);
-      SimpleProfile_SetParameter(SIMPLEPROFILE_CHAR4, sizeof(buf), buf);
-      Display_print1(dispUHandle , 0 , 0 , "Notify CHAR 4: %d" , sizeof(buf) );
+      uint8_t success1[] = {0x01, 0x01, 0xF3};
+      uint8_t success2[] = {0x01, 0x04, 0x12, 0x34, 0x56, 0x78};
+      uint8_t error[] = {0x01, 0x01, 0x3F};
+      if (count %2 == 0) {
+        SimpleProfile_SetParameter(SIMPLEPROFILE_CHAR4, sizeof(success1), success1);
+        Display_print1(dispUHandle , 0 , 0 , "Notify CHAR 4 success: %d" , sizeof(success1) );
+      } else {
+        SimpleProfile_SetParameter(SIMPLEPROFILE_CHAR4, sizeof(error), error);
+        Display_print1(dispUHandle , 0 , 0 , "Notify CHAR 4 error: %d" , sizeof(error) );
+      }
+      count++;
     
       break;
 

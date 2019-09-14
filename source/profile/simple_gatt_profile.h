@@ -45,8 +45,6 @@
  Release Date: 2016-10-26 15:20:04
  *****************************************************************************/
 
- //MMMMY
- 
 #ifndef SIMPLEGATTPROFILE_H
 #define SIMPLEGATTPROFILE_H
 
@@ -71,24 +69,27 @@ extern "C"
 #define SIMPLEPROFILE_CHAR5                   4  // RW uint8 - Profile Characteristic 4 value
   
 // Simple Profile Service UUID
-#define SIMPLEPROFILE_SERV_UUID               0xFFF0
+#define SIMPLEPROFILE_SERV_UUID               0xFFA0
     
 // Key Pressed UUID
-#define SIMPLEPROFILE_CHAR1_UUID            0xFFF1
+#define SIMPLEPROFILE_CHAR1_UUID            0xFFA1
 #define SIMPLEPROFILE_CHAR2_UUID            0xFFF2
 #define SIMPLEPROFILE_CHAR3_UUID            0xFFF3
-#define SIMPLEPROFILE_CHAR4_UUID            0xFFF4
+#define SIMPLEPROFILE_CHAR4_UUID            0xFFA2
 #define SIMPLEPROFILE_CHAR5_UUID            0xFFF5
   
 // Simple Keys Profile Services bit fields
 #define SIMPLEPROFILE_SERVICE               0x00000001
 
-// Length of Characteristic 5 in bytes
-#define SIMPLEPROFILE_CHAR5_LEN           5  
-
-  
-#define simpleProfileChar4_len            20 
 #define SIMPLEPROFILE_CHAR1_LEN           21
+    
+ // Length of Characteristic 2 in bytes
+#define SIMPLEPROFILE_CHAR2_LEN           10    
+   
+// Length of Characteristic 5 in bytes
+#define SIMPLEPROFILE_CHAR5_LEN           5   
+  
+#define simpleProfileChar4_len            20
 static uint8 char4ValueLen = 20;
 
 /*********************************************************************
