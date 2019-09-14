@@ -1,0 +1,9 @@
+iar/app/FlashROM_TFT/
+iar/app/settings/
+*.dep
+*.ewt
+iar/stack/FlashROM/
+iar/config/configPkg
+iar/settings
+iar/config/src
+iar/config/lib_linker.cmd

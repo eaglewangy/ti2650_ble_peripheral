@@ -528,7 +528,7 @@ static void SimpleBLEPeripheral_init(void)
    // Initialize GATT attributes
   GGS_AddService(GATT_ALL_SERVICES);           // GAP
   GATTServApp_AddService(GATT_ALL_SERVICES);   // GATT attributes
-  DevInfo_AddService();                        // Device Information Service
+  // DevInfo_AddService();                        // Device Information Service
 #ifndef FEATURE_OAD_ONCHIP
   SimpleProfile_AddService(GATT_ALL_SERVICES); // Simple GATT Profile
 #endif //!FEATURE_OAD_ONCHIP
@@ -1159,6 +1159,8 @@ static void SimpleBLEPeripheral_charValueChangeCB(uint8_t paramID)
 static void SimpleBLEPeripheral_processCharValueChangeEvt(uint8_t paramID)
 {
 #ifndef FEATURE_OAD_ONCHIP
+  Display_print1(dispUHandle,0,0,"FEATURE_OAD_ONCHIP is not defined. %s", "");
+  
   uint8_t newValue;
   
   switch(paramID)

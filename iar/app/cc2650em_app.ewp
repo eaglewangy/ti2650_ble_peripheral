@@ -2172,7 +2172,7 @@
       <name>$PROJ_DIR$\..\..\..\..\..\src\components\icall\src\icall.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\..\src\components\icall\src\inc\icall.h</name>
+      <name>$PROJ_DIR$\..\..\..\..\..\src\components\icall\src\inc\ICall.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\..\..\src\icall\inc\icall_addrs.h</name>
@@ -2275,10 +2275,10 @@
       <name>$PROJ_DIR$\..\..\..\..\..\src\profiles\roles\cc26xx\peripheral.h</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\..\src\profiles\simple_profile\cc26xx\simple_gatt_profile.c</name>
+      <name>$PROJ_DIR$\..\..\source\profile\simple_gatt_profile.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\..\src\profiles\simple_profile\simple_gatt_profile.h</name>
+      <name>$PROJ_DIR$\..\..\source\profile\simple_gatt_profile.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\..\..\src\profiles\keys\cc26xx\simplekeys.c</name>
