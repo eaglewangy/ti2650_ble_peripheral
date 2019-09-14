@@ -140,11 +140,7 @@ static CONST gattAttrType_t simpleProfileService = { ATT_BT_UUID_SIZE, simplePro
 static uint8 simpleProfileChar1Props = GATT_PROP_READ | GATT_PROP_WRITE;
 
 // Characteristic 1 Value
-#ifdef PROFILE_Multibyte
 static uint8 simpleProfileChar1[SIMPLEPROFILE_CHAR1_LEN] = {0};
-#else
-static uint8 simpleProfileChar1 = 0;
-#endif
 
 // Simple Profile Characteristic 1 User Description
 static uint8 simpleProfileChar1UserDesp[17] = "Characteristic 1";
@@ -174,11 +170,7 @@ static uint8 simpleProfileChar3UserDesp[17] = "Characteristic 3";
 static uint8 simpleProfileChar4Props = GATT_PROP_NOTIFY;
 
 // Characteristic 4 Value
-#ifdef  PROFILE_Multibyte
 static uint8 simpleProfileChar4[simpleProfileChar4_len] = {0};
-#else
-static uint8 simpleProfileChar4 = 0;
-#endif
 
 // Simple Profile Characteristic 4 Configuration Each client has its own
 // instantiation of the Client Characteristic Configuration. Reads of the
@@ -226,11 +218,7 @@ static gattAttribute_t simpleProfileAttrTbl[SERVAPP_NUM_ATTR_SUPPORTED] =
         { ATT_BT_UUID_SIZE, simpleProfilechar1UUID },
         GATT_PERMIT_READ | GATT_PERMIT_WRITE, 
         0, 
-#ifdef PROFILE_Multibyte
         simpleProfileChar1
-#else
-        &simpleProfileChar1 
-#endif 
       },
 
       // Characteristic 1 User Description
@@ -302,11 +290,7 @@ static gattAttribute_t simpleProfileAttrTbl[SERVAPP_NUM_ATTR_SUPPORTED] =
         { ATT_BT_UUID_SIZE, simpleProfilechar4UUID },
         0, 
         0,
-#ifdef  PROFILE_Multibyte
         simpleProfileChar4
-#else
-        &simpleProfileChar4
-#endif  
       },
 
       // Characteristic 4 configuration
@@ -472,17 +456,10 @@ bStatus_t SimpleProfile_SetParameter( uint8 param, uint8 len, void *value )
   switch ( param )
   {
     case SIMPLEPROFILE_CHAR1:
-#ifdef PROFILE_Multibyte
-      if ( len == SIMPLEPROFILE_CHAR5_LEN ) 
+      if ( len < SIMPLEPROFILE_CHAR1_LEN ) 
       {
         memcpy( simpleProfileChar1, value, SIMPLEPROFILE_CHAR1_LEN );
       }
-#else
-	  if ( len == sizeof ( uint8 ) ) 
-      {
-        simpleProfileChar1 = *((uint8*)value);
-      }
-#endif
       else
       {
         ret = bleInvalidRange;
@@ -512,23 +489,17 @@ bStatus_t SimpleProfile_SetParameter( uint8 param, uint8 len, void *value )
       break;
 
     case SIMPLEPROFILE_CHAR4:
-      if ( len == sizeof ( uint8 ) ) 
+      // if ( len == sizeof ( uint8 ) ) 
+      if ( len < simpleProfileChar4_len )
       {
-#ifdef PROFILE_Multibyte
         uint8 *pBuf = value;
         memset(simpleProfileChar4, 0, simpleProfileChar4_len);
-        VOID memcpy( simpleProfileChar4, pBuf+1, pBuf[0] );
+        // VOID memcpy( simpleProfileChar4, pBuf+1, pBuf[0] );
+        VOID memcpy( simpleProfileChar4, pBuf, len );
         // See if Notification has been enabled
         GATTServApp_ProcessCharCfg( simpleProfileChar4Config, simpleProfileChar4, FALSE,
                             simpleProfileAttrTbl, GATT_NUM_ATTRS( simpleProfileAttrTbl ),
                             INVALID_TASK_ID, simpleProfile_ReadAttrCB );
-#else
-        simpleProfileChar4 = *((uint8*)value);
-        // See if Notification has been enabled
-        GATTServApp_ProcessCharCfg( simpleProfileChar4Config, &simpleProfileChar4, FALSE,
-                                    simpleProfileAttrTbl, GATT_NUM_ATTRS( simpleProfileAttrTbl ),
-                                    INVALID_TASK_ID, simpleProfile_ReadAttrCB );
-#endif
       }
       else
       {
@@ -574,11 +545,7 @@ bStatus_t SimpleProfile_GetParameter( uint8 param, void *value )
   switch ( param )
   {
     case SIMPLEPROFILE_CHAR1:
-#ifdef PROFILE_Multibyte
       memcpy( value, simpleProfileChar1, SIMPLEPROFILE_CHAR1_LEN );  //simpleProfileChar1 是数组名
-#else
-      *((uint8*)value) = simpleProfileChar1;
-#endif
       break;
 
     case SIMPLEPROFILE_CHAR2:
@@ -590,11 +557,7 @@ bStatus_t SimpleProfile_GetParameter( uint8 param, void *value )
       break;  
 
     case SIMPLEPROFILE_CHAR4:
-#ifdef PROFILE_Multibyte
       memcpy( value, simpleProfileChar4, simpleProfileChar4_len );
-#else
-      *((uint8*)value) = simpleProfileChar4;
-#endif
       break;
 
     case SIMPLEPROFILE_CHAR5:
@@ -658,14 +621,9 @@ static bStatus_t simpleProfile_ReadAttrCB(uint16_t connHandle,
         pValue[0] = *pAttr->pValue;
         break;
         
-      case SIMPLEPROFILE_CHAR4_UUID:
-#ifdef PROFILE_Multibyte      
+      case SIMPLEPROFILE_CHAR4_UUID:    
         *pLen = char4ValueLen;
         memcpy( pValue, pAttr->pValue, char4ValueLen );
-#else
-        *pLen = 1;
-        pValue[0] = *pAttr->pValue;
-#endif
         break;       
         
       case SIMPLEPROFILE_CHAR5_UUID:
@@ -704,7 +662,7 @@ static bStatus_t simpleProfile_ReadAttrCB(uint16_t connHandle,
  *
  * @return  SUCCESS, blePending or Failure
  */
-#ifdef PROFILE_Multibyte
+// #ifdef PROFILE_Multibyte
 static bStatus_t simpleProfile_WriteAttrCB(uint16_t connHandle,
                                            gattAttribute_t *pAttr,
                                            uint8_t *pValue, uint16_t len,
@@ -754,9 +712,10 @@ static bStatus_t simpleProfile_WriteAttrCB(uint16_t connHandle,
         if ( status == SUCCESS )
         {
           uint8 *pCurValue = (uint8 *)pAttr->pValue;
-          memset(pCurValue,0,SIMPLEPROFILE_CHAR1_LEN);
-          pCurValue[0] = len;
-          memcpy( pCurValue+1, pValue, len );
+          // memset(pCurValue,0,SIMPLEPROFILE_CHAR1_LEN);
+          // pCurValue[0] = len;
+          // memcpy( pCurValue+1, pValue, len );
+          memcpy( pCurValue, pValue, len );
           if( pAttr->pValue == simpleProfileChar1 )
           {
             notifyApp = SIMPLEPROFILE_CHAR1; 
@@ -795,6 +754,7 @@ static bStatus_t simpleProfile_WriteAttrCB(uint16_t connHandle,
   
   return ( status );
 }
+/*
 #else
 static bStatus_t simpleProfile_WriteAttrCB(uint16_t connHandle,
                                            gattAttribute_t *pAttr,
@@ -870,6 +830,7 @@ static bStatus_t simpleProfile_WriteAttrCB(uint16_t connHandle,
   return ( status );
 }
 #endif
+*/
 
 /*********************************************************************
 *********************************************************************/

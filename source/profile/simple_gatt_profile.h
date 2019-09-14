@@ -87,11 +87,10 @@ extern "C"
 #define SIMPLEPROFILE_CHAR5_LEN           5  
 
   
-#ifdef PROFILE_Multibyte
 #define simpleProfileChar4_len            20 
 #define SIMPLEPROFILE_CHAR1_LEN           21
 static uint8 char4ValueLen = 20;
-#endif
+
 /*********************************************************************
  * TYPEDEFS
  */

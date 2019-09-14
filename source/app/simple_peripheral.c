@@ -1161,15 +1161,24 @@ static void SimpleBLEPeripheral_processCharValueChangeEvt(uint8_t paramID)
 #ifndef FEATURE_OAD_ONCHIP
   Display_print1(dispUHandle,0,0,"FEATURE_OAD_ONCHIP is not defined. %s", "");
   
-  uint8_t newValue;
+  uint8_t newValue[21];
   
   switch(paramID)
   {
     case SIMPLEPROFILE_CHAR1:
-      SimpleProfile_GetParameter(SIMPLEPROFILE_CHAR1, &newValue);
+      SimpleProfile_GetParameter(SIMPLEPROFILE_CHAR1, newValue);
       
-      Display_print1(dispHandle, 4, 0, "Char 1: %d", (uint16_t)newValue);
-      Display_print1(dispUHandle,0,0,"Char 1: %d" , (uint16_t)newValue);
+      Display_print1(dispHandle, 4, 0, "Char 1: %d", (uint16_t)newValue[0]);
+      for (int i = 0; i < sizeof(newValue); ++i) {
+        Display_print1(dispUHandle,0,0,"Char 1: %x" , newValue[i]);
+      }
+      
+      // notify on CHAR4
+      uint8_t buf[4] = {0xF3, 0x3F, 0x5A, 0xA5};
+      // SimpleProfile_SetParameter(SIMPLEPROFILE_CHAR4, sizeof(uint8_t), &valueToCopy);
+      SimpleProfile_SetParameter(SIMPLEPROFILE_CHAR4, sizeof(buf), buf);
+      Display_print1(dispUHandle , 0 , 0 , "Notify CHAR 4: %d" , sizeof(buf) );
+    
       break;
 
     case SIMPLEPROFILE_CHAR3:
@@ -1201,6 +1210,8 @@ static void SimpleBLEPeripheral_processCharValueChangeEvt(uint8_t paramID)
  */
 static void SimpleBLEPeripheral_performPeriodicTask(void)
 {
+  return;
+  
 #ifndef FEATURE_OAD_ONCHIP
   uint8_t valueToCopy;
   static uint32_t statisticCHAR = 1;
@@ -1212,10 +1223,11 @@ static void SimpleBLEPeripheral_performPeriodicTask(void)
     // Note that if notifications of the fourth characteristic have been
     // enabled by a GATT client device, then a notification will be sent
     // every time this function is called.
-    SimpleProfile_SetParameter(SIMPLEPROFILE_CHAR4, sizeof(uint8_t),
-                               &valueToCopy);
+    uint8_t buf[2] = {0xF3, 0x3F};
+    // SimpleProfile_SetParameter(SIMPLEPROFILE_CHAR4, sizeof(uint8_t), &valueToCopy);
+    SimpleProfile_SetParameter(SIMPLEPROFILE_CHAR4, sizeof(buf), buf);
     Display_print1(dispHandle , 7 , 0 , "SET CHAR 4: %d" , statisticCHAR );
-    Display_print1(dispUHandle , 0 , 0 , "SET CHAR 4: %d" , statisticCHAR );
+    Display_print1(dispUHandle , 0 , 0 , "SET CHAR 4: %d" , valueToCopy );
     statisticCHAR++;
   }
 #endif //!FEATURE_OAD_ONCHIP
