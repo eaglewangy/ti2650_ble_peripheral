@@ -336,6 +336,9 @@ static void SimpleBLEPeripheral_processCharValueChangeEvt(uint8_t paramID);
 static void SimpleBLEPeripheral_performPeriodicTask(void);
 static void SimpleBLEPeripheral_clockHandler(UArg arg);
 
+static void SimpleBLEPeripheral_sendNotification(void);
+static void SimpleBLEPeripheral_delayClockHandler(UArg arg);
+
 static void SimleBLEPeripheral_Test();
 
 void SimpleBLEPeripheral_keyChangeHandler(uint8 keys);
@@ -1191,7 +1194,7 @@ static void SimpleBLEPeripheral_processCharValueChangeEvt(uint8_t paramID)
   
   uint8_t newValue[21];
   
-  static uint32_t count = 0;
+  // static uint32_t count = 0;
   
   switch(paramID)
   {
@@ -1203,6 +1206,9 @@ static void SimpleBLEPeripheral_processCharValueChangeEvt(uint8_t paramID)
         Display_print1(dispUHandle,0,0,"Char 1: %x" , newValue[i]);
       }
       
+      SimpleBLEPeripheral_sendNotification();
+      
+      /*
       // notify on CHAR4
       uint8_t success1[] = {0x01, 0x01, 0xF3};
       uint8_t success2[] = {0x01, 0x04, 0x12, 0x34, 0x56, 0x78};
@@ -1215,6 +1221,7 @@ static void SimpleBLEPeripheral_processCharValueChangeEvt(uint8_t paramID)
         Display_print1(dispUHandle , 0 , 0 , "Notify CHAR 4 error: %d" , sizeof(error) );
       }
       count++;
+      */
     
       break;
 
@@ -1230,6 +1237,29 @@ static void SimpleBLEPeripheral_processCharValueChangeEvt(uint8_t paramID)
       break;
   }
 #endif //!FEATURE_OAD_ONCHIP
+}
+
+static void SimpleBLEPeripheral_sendNotification(void)
+{
+  static uint32_t count = 0;
+  // notify on CHAR4
+  uint8_t success1[] = {0x01, 0x01, 0xF3};
+  uint8_t success2[] = {0x01, 0x04, 0x12, 0x34, 0x56, 0x78};
+  uint8_t error[] = {0x01, 0x01, 0x3F};
+  if (count %2 == 0) {
+    SimpleProfile_SetParameter(SIMPLEPROFILE_CHAR4, sizeof(success1), success1);
+    Display_print1(dispUHandle , 0 , 0 , "Notify CHAR 4 success1: %d" , sizeof(success1) );
+    for (uint32_t i = 0; i < 1000000; i++) {
+      if (i % 12345 == 0) {}
+    }
+    SimpleProfile_SetParameter(SIMPLEPROFILE_CHAR4, sizeof(success2), success2);
+    Display_print1(dispUHandle , 0 , 0 , "Notify CHAR 4 success2: %d" , sizeof(success2) );
+    
+   } else {
+    SimpleProfile_SetParameter(SIMPLEPROFILE_CHAR4, sizeof(error), error);
+    Display_print1(dispUHandle , 0 , 0 , "Notify CHAR 4 error: %d" , sizeof(error) );
+   }
+   count++;
 }
 
 /*********************************************************************
