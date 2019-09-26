@@ -165,6 +165,9 @@
 #define TOTAL_PACKET_OVERHEAD 7
 
 #define MAX_PDU_SIZE 27
+
+#define FEATURE_USE_BEACON
+
 /*********************************************************************
  * TYPEDEFS
  */
@@ -259,6 +262,7 @@ static uint8_t scanRspData[] =
   0       // 0dBm
 };
 
+#ifndef FEATURE_USE_BEACON
 // GAP - Advertisement data (max size = 31 bytes, though this is
 // best kept short to conserve power while advertisting)
 static uint8_t advertData[] =
@@ -313,6 +317,32 @@ static uint8_t advertData[] =
   HI_UINT16(SIMPLEPROFILE_SERV_UUID)
 #endif //FEATURE_OAD_ONCHIP
 };
+
+#else
+static uint8_t advertData[] =
+{
+  0x02,
+  GAP_ADTYPE_FLAGS, // 01
+  DEFAULT_DISCOVERABLE_MODE, // | GAP_ADTYPE_FLAGS_BREDR_NOT_SUPPORTED,
+  
+  0x1A,
+  0xFF,
+  
+  0x4C, 0x0,
+  
+  0x02,
+  0x15,
+  
+  // uuid
+  0x30, 0x47, 0x41, 0x43, 0x30, 0x30, 0x36, 0x30, 0x33, 0x37, 0x42, 0x32, 0x31, 0x45, 0x46, 0x35,
+  
+  0x0, 0x0, // major
+  0x0, 0x0, // minor
+  
+  0xC5 // Tx power
+  
+};
+#endif
 
 // GAP GATT Attributes
 static uint8_t attDeviceName[GAP_DEVICE_NAME_LEN] = "Simple BLE Peripheral";
