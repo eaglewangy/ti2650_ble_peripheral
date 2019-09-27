@@ -334,7 +334,7 @@ static uint8_t advertData[] =
   0x15,
   
   // uuid
-  0x30, 0x47, 0x41, 0x43, 0x30, 0x30, 0x36, 0x30, 0x33, 0x37, 0x42, 0x32, 0x31, 0x45, 0x46, 0x35,
+  0x47, 0x41, 0x43, 0x30, 0x30, 0x36, 0x30, 0x33, 0x33, 0x33, 0x33, 0x43, 0x43, 0x43, 0x43, 0x30,
   
   0x0, 0x0, // major
   0x0, 0x0, // minor
@@ -345,7 +345,8 @@ static uint8_t advertData[] =
 #endif
 
 // GAP GATT Attributes
-static uint8_t attDeviceName[GAP_DEVICE_NAME_LEN] = "Simple BLE Peripheral";
+// static uint8_t attDeviceName[GAP_DEVICE_NAME_LEN] = "Simple BLE Peripheral";
+static uint8_t attDeviceName[] = "GAC00603333CCCC";
 
 // Globals used for ATT Response retransmission
 static gattMsgEvent_t *pAttRsp = NULL;
@@ -557,7 +558,8 @@ static void SimpleBLEPeripheral_init(void)
   }
 
   // Set the GAP Characteristics
-  GGS_SetParameter(GGS_DEVICE_NAME_ATT, GAP_DEVICE_NAME_LEN, attDeviceName);
+  // GGS_SetParameter(GGS_DEVICE_NAME_ATT, GAP_DEVICE_NAME_LEN, attDeviceName);
+  GGS_SetParameter(GGS_DEVICE_NAME_ATT, sizeof(attDeviceName), attDeviceName);
 
   // Set advertising interval
   {
