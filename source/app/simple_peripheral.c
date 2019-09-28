@@ -247,6 +247,29 @@ static uint8_t scanRspData[] =
   'a',
   'l',
   */
+  // complete name
+  0x10,   // length of this data
+  GAP_ADTYPE_LOCAL_NAME_COMPLETE,
+  'G',
+  'A',
+  'C',
+  '0',
+  '0',
+  '6',
+  '0',
+  '3',
+  '3',
+  '3',
+  '3',
+  'C',
+  'C',
+  'C',
+  'C',
+  
+  0x03,   // length of this data
+  GAP_ADTYPE_16BIT_MORE,
+  LO_UINT16(SIMPLEPROFILE_SERV_UUID),
+  HI_UINT16(SIMPLEPROFILE_SERV_UUID),
 
   // connection interval range
   0x05,   // length of this data
@@ -339,7 +362,14 @@ static uint8_t advertData[] =
   0x0, 0x0, // major
   0x0, 0x0, // minor
   
-  0xC5 // Tx power
+  0xC5, // Tx power
+    
+  /*
+  0x03,
+  GAP_ADTYPE_16BIT_MORE,
+  LO_UINT16(SIMPLEPROFILE_SERV_UUID),
+  HI_UINT16(SIMPLEPROFILE_SERV_UUID)
+    */
   
 };
 #endif
